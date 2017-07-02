@@ -1,4 +1,5 @@
 firmware/build
+firmware/cmake-build-debug/
 firmware/.cproject
 firmware/.mxproject
 firmware/.project
