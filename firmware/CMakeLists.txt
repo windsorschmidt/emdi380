@@ -20,6 +20,7 @@ set(USB_DIR ${CMAKE_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library)
 
 # Look here for header files.
 include_directories(${CMAKE_SOURCE_DIR}/Inc)
+include_directories(${CMAKE_SOURCE_DIR}/ugfx)
 include_directories(${CMAKE_SOURCE_DIR}/ugfx/src)
 include_directories(${CMSIS_DIR}/Include)
 include_directories(${DEVICE_DIR}/Include)
@@ -50,11 +51,9 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/startup/startup_stm32f405xx.s PROPERTY L
 
 # The linker flag --gc-section keeps unused object code here from being linked.
 add_executable(${PROJ}.elf
+  ${CMAKE_SOURCE_DIR}/ugfx/src/gfx_mk.c
   ${SOURCE_DIR}/main.c
   ${SOURCE_DIR}/sandbox.c
-  ${CMAKE_SOURCE_DIR}/ugfx/src/gfx_mk.c
-  ${SOURCE_DIR}/hal.c
-  ${SOURCE_DIR}/lcd.c
   ${SOURCE_DIR}/stm32f4xx_it.c
   ${SOURCE_DIR}/system_stm32f4xx.c
   ${SOURCE_DIR}/usb_device.c
