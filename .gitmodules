@@ -1,0 +1,3 @@
+[submodule "firmware/ugfx"]
+	path = firmware/ugfx
+	url = https://git.ugfx.io/ugfx/ugfx.git
