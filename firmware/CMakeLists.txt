@@ -30,6 +30,7 @@ include_directories(${RTOS_DIR}/include)
 include_directories(${RTOS_DIR}/portable/GCC/ARM_CM4F)
 include_directories(${USB_DIR}/Core/Inc)
 include_directories(${USB_DIR}/Class/CDC/Inc)
+include_directories(${USB_DIR}/Class/HID/Inc)
 
 # For diagnostic tools like rtags.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -38,13 +39,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm
 set(CMAKE_C_COMPILER "arm-none-eabi-gcc")
 
-set(CMAKE_C_FLAGS "-O0 -g -Wall -Wundef -std=c99 -ffunction-sections -fdata-sections")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mno-thumb-interwork -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -specs=nano.specs -specs=nosys.specs")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mcpu=cortex-m4 -mthumb -DSTM32F405xx -DARM_MATH_CM4")
+set(CMAKE_C_FLAGS "-Og -g3 -Wall -Wextra -Wundef -std=c99 -ffunction-sections \
+-fdata-sections -fno-common -mno-thumb-interwork -mfpu=fpv4-sp-d16 -mfloat-abi=hard \
+-mcpu=cortex-m4 -mthumb -specs=nano.specs -specs=nosys.specs")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTM32F405xx -DARM_MATH_CM4")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_REVISION=${GITREV}")
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-section,--undefined=uxTopUsedPriority")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T../STM32F405VGTx_FLASH.ld" )
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections,-Map=emdi380.map \
+-T../STM32F405VGTx_FLASH.ld -mcpu=cortex-m4 -mthumb -mfloat-abi=hard")
 
 # Some trickery to get CMake to deal with our assembler code.
 set_property(SOURCE ${CMAKE_SOURCE_DIR}/startup/startup_stm32f405xx.s PROPERTY LANGUAGE C)
@@ -61,6 +62,7 @@ add_executable(${PROJ}.elf
   ${SOURCE_DIR}/usbd_cdc_if.c
   ${SOURCE_DIR}/usbd_desc.c
   ${SOURCE_DIR}/stm32f4xx_hal_timebase_TIM.c
+  ${SOURCE_DIR}/stm32f4xx_hal_msp.c
   ${CMAKE_SOURCE_DIR}/startup/startup_stm32f405xx.s
   ${HAL_DIR}/Src/stm32f4xx_hal.c
   ${HAL_DIR}/Src/stm32f4xx_hal_cortex.c
@@ -73,9 +75,13 @@ add_executable(${PROJ}.elf
   ${HAL_DIR}/Src/stm32f4xx_hal_rtc.c
   ${HAL_DIR}/Src/stm32f4xx_hal_rtc_ex.c
   ${HAL_DIR}/Src/stm32f4xx_hal_gpio.c
+  ${HAL_DIR}/Src/stm32f4xx_hal_spi.c
   ${HAL_DIR}/Src/stm32f4xx_hal_pcd.c
   ${HAL_DIR}/Src/stm32f4xx_hal_pcd_ex.c
+  ${HAL_DIR}/Src/stm32f4xx_hal_sram.c
+  ${HAL_DIR}/Src/stm32f4xx_ll_fsmc.c
   ${HAL_DIR}/Src/stm32f4xx_ll_usb.c
+  # ${USB_DIR}/Class/HID/Src/usbd_hid.c
   ${USB_DIR}/Class/CDC/Src/usbd_cdc.c
   ${USB_DIR}/Core/Src/usbd_core.c
   ${USB_DIR}/Core/Src/usbd_ctlreq.c

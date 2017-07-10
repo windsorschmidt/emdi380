@@ -85,7 +85,7 @@
 /*---------- -----------*/
 #define USBD_LPM_ENABLED     0
 /*---------- -----------*/
-#define USBD_SELF_POWERED     1
+#define USBD_SELF_POWERED     0
 /*---------- -----------*/
 #define USBD_CDC_INTERVAL     1000
 
